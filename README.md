@@ -1,0 +1,2 @@
+# gui-sync
+sync configuration
