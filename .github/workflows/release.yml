@@ -1,0 +1,43 @@
+name: Build Sync-Configuration
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  Build:
+    permissions: write-all
+    runs-on: ubuntu-latest
+    env:
+      APP_NAME: GUI-Sync
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: ./go.mod
+
+      - name: Build 1
+        run: GOOS=windows GOARCH=amd64 go build -o ${{ env.APP_NAME }}-windows-amd64.exe
+
+      - name: Build 2
+        run: GOOS=windows GOARCH=arm64 go build -o ${{ env.APP_NAME }}-windows-arm64.exe
+
+      - name: Build 3
+        run: GOOS=windows GOARCH=386 go build -o ${{ env.APP_NAME }}-windows-386.exe
+
+      - name: Build 4
+        run: GOOS=linux GOARCH=amd64 go build -o ${{ env.APP_NAME }}-linux-amd64
+
+      - name: Build 5
+        run: GOOS=linux GOARCH=arm64 go build -o ${{ env.APP_NAME }}-linux-arm64
+
+      - name: Create Release and Upload Assets
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ env.APP_NAME }}*
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true
