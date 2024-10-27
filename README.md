@@ -15,7 +15,8 @@ Prerequisites: A server: Windows or Linux
 GUI-Sync --address 0.0.0.0 --port 8080 --token "A unique string"
 
 # https
-GUI-Sync --address 0.0.0.0 --port 8080 --token "A unique string" --cert /path/to/serer.cert --key /path/to/server.key
+openssl req -new -nodes -x509 -out server.crt -keyout server.key -days 3650 -subj "/C=CN/ST=SH/L=SH/O=GUI.for.Cores/OU=GUI.for.Cores Software/CN=127.0.0.1/emailAddress=gui-for-cores.github.io"
+GUI-Sync --address 0.0.0.0 --port 8080 --token "A unique string" --cert serer.crt --key server.key
 ```
 
 Note: The `token` needs to be consistent with the client.
