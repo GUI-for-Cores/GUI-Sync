@@ -11,7 +11,11 @@ Prerequisites: A server: Windows or Linux
 2、Run
 
 ```bash
+# http
 GUI-Sync --address 0.0.0.0 --port 8080 --token "A unique string"
+
+# https
+GUI-Sync --address 0.0.0.0 --port 8080 --token "A unique string" --cert /path/to/serer.cert --key /path/to/server.key
 ```
 
 Note: The `token` needs to be consistent with the client.

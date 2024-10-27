@@ -16,6 +16,8 @@ var (
 	Addrss   = "0.0.0.0"
 	Port     = 8080
 	Token    = ""
+	Cert     = ""
+	Key      = ""
 )
 
 type BackupEntry struct {
@@ -27,6 +29,8 @@ type BackupEntry struct {
 func main() {
 	flag.StringVar(&Token, "token", "", "Authorization")
 	flag.StringVar(&Addrss, "address", "0.0.0.0", "Address to listen on")
+	flag.StringVar(&Cert, "cert", "", "Cert file path")
+	flag.StringVar(&Key, "key", "", "Key file path")
 	flag.IntVar(&Port, "port", 8080, "Port to listen on")
 	flag.Parse()
 
@@ -39,7 +43,16 @@ func main() {
 
 	http.HandleFunc("/backup", withAuth(handleBackup))
 	http.HandleFunc("/sync", withAuth(handleSync))
-	http.ListenAndServe(fmt.Sprintf("%s:%d", Addrss, Port), nil)
+
+	var err error
+	if Cert != "" && Key != "" {
+		err = http.ListenAndServeTLS(fmt.Sprintf("%s:%d", Addrss, Port), Cert, Key, nil)
+	} else {
+		err = http.ListenAndServe(fmt.Sprintf("%s:%d", Addrss, Port), nil)
+	}
+	if err != nil {
+		log.Print(err.Error())
+	}
 }
 
 func withAuth(next http.HandlerFunc) http.HandlerFunc {
